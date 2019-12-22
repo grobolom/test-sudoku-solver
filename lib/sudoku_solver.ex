@@ -46,6 +46,18 @@ defmodule SudokuSolver do
     rows_are_valid(rows) and columns_are_valid(columns) and blocks_are_valid(blocks)
   end
 
+  def get_rows(board) do
+    []
+  end
+
+  def get_columns(board) do
+    []
+  end
+
+  def get_blocks(board) do
+    []
+  end
+
   def rows_are_valid(rows) do
     true
   end
