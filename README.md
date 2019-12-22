@@ -1,25 +1,21 @@
-# test-sudoku-solver
-Trying to make a backtracking sudoku solver in Elixir
+# SudokuSolver
 
-### inputs
+**TODO: Add description**
+
+## Installation
+
+If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+by adding `sudoku_solver` to your list of dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:sudoku_solver, "~> 0.1.0"}
+  ]
+end
 ```
-[
-  [0,0,4,5,0,9,0,0,0],
-  [0,2,8,7,0,0,9,0,0],
-  [0,7,9,0,4,0,0,0,8],
-  [0,0,0,0,7,1,0,0,4],
-  [0,0,0,0,9,0,3,0,6],
-  [0,0,0,2,5,0,0,1,0],
-  [0,9,0,0,2,0,4,6,0],
-  [0,6,0,9,0,5,0,0,0],
-  [7,0,0,3,0,4,1,2,0],
-]
-```
 
-### output
-A solved sudoku
-
-### ideas
-maybe we can take input by just doing a big long string and displaying the
-result. Meaning the above just goes 0045090000287 .... etc.
+Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
+and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
+be found at [https://hexdocs.pm/sudoku_solver](https://hexdocs.pm/sudoku_solver).
 
