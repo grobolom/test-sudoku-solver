@@ -6,19 +6,19 @@ defmodule SudokuSolver do
   @doc """
   Tries to solve!
 
-  SudokuSolver.solve(
-    [
-      [0,0,4,5,0,9,0,0,0],
-      [0,2,8,7,0,0,9,0,0],
-      [0,7,9,0,4,0,0,0,8],
-      [0,0,0,0,7,1,0,0,4],
-      [0,0,0,0,9,0,3,0,6],
-      [0,0,0,2,5,0,0,1,0],
-      [0,9,0,0,2,0,4,6,0],
-      [0,6,0,9,0,5,0,0,0],
-      [7,0,0,3,0,4,1,2,0],
-    ]
-  )
+  board = [
+    [0,0,4,5,0,9,0,0,0],
+    [0,2,8,7,0,0,9,0,0],
+    [0,7,9,0,4,0,0,0,8],
+    [0,0,0,0,7,1,0,0,4],
+    [0,0,0,0,9,0,3,0,6],
+    [0,0,0,2,5,0,0,1,0],
+    [0,9,0,0,2,0,4,6,0],
+    [0,6,0,9,0,5,0,0,0],
+    [7,0,0,3,0,4,1,2,0],
+  ]
+
+  SudokuSolver.solve(board)
 
   # output
   [
@@ -46,28 +46,58 @@ defmodule SudokuSolver do
     rows_are_valid(rows) and columns_are_valid(columns) and blocks_are_valid(blocks)
   end
 
-  def get_rows(board) do
-    []
+  # returns a list of lists of elements of the rows. Unordered
+  def get_rows(board, _range \\ 9) do
+    board
   end
 
-  def get_columns(board) do
-    []
+  # returns a list of lists of elements of the columns. Unordered
+  def get_columns(board, range \\ 9) do
+    indexes = Range.new(1, range)
+    Enum.map(indexes, fn(row) -> Enum.map(indexes, fn(col) -> board |> Enum.at(col - 1) |> Enum.at(row - 1) end ) end)
   end
 
+  # returns a list of lists of elements of the 9 blocks in sudoku. Unordered
   def get_blocks(board) do
-    []
+    block_ranges = [
+      [Range.new(1, 3), Range.new(1, 3)],
+      [Range.new(4, 6), Range.new(1, 3)],
+      [Range.new(7, 9), Range.new(1, 3)],
+      [Range.new(1, 3), Range.new(4, 6)],
+      [Range.new(4, 6), Range.new(4, 6)],
+      [Range.new(7, 9), Range.new(4, 6)],
+      [Range.new(1, 3), Range.new(7, 9)],
+      [Range.new(4, 6), Range.new(7, 9)],
+      [Range.new(7, 9), Range.new(7, 9)],
+    ]
+
+    Enum.map(block_ranges, fn([row_range, col_range]) ->
+      Enum.map(row_range, fn(row) ->
+        Enum.map(col_range, fn(col) ->
+          board
+          |> Enum.at(col - 1)
+          |> Enum.at(row - 1)
+        end)
+      end)
+      |> List.flatten
+    end)
   end
 
   def rows_are_valid(rows) do
-    true
+    Enum.all?(rows, fn(row) -> row_valid(row) end)
+  end
+
+  def row_valid(row) do
+    no_zeroes = Enum.reject(row, fn(e) -> e == 0 end)
+    Enum.uniq(no_zeroes) == no_zeroes
   end
 
   def columns_are_valid(rows) do
-    true
+    rows_are_valid(rows)
   end
 
   def blocks_are_valid(blocks) do
-    true
+    rows_are_valid(blocks)
   end
 
   """
