@@ -40,7 +40,6 @@ defmodule SudokuSolver do
 
     # this is where we start
     index = 0
-    IO.puts("")
 
     # when board is valid, go to the next element with n = 1
     # when board is invalid, and n < 9, go to the same element with n += 1
@@ -63,11 +62,7 @@ defmodule SudokuSolver do
 
     valid = is_valid(new_board)
 
-    IO.inspect(new_board)
-
     cond do
-      iteration > 2000 ->
-        new_board
       n > 9 ->
         {r, c, _} = Enum.at(unsolved, i - 1)
         x = Enum.at(board, r - 1) |> Enum.at(c - 1)
@@ -79,15 +74,12 @@ defmodule SudokuSolver do
       i < 0 ->
         new_board
       valid == true and i == length(unsolved) - 1 ->
-        IO.puts("holy shit")
         new_board
       valid == true ->
         solvo(new_board, unsolved, i + 1, 1, iteration + 1)
       valid == false and n < 9 ->
         solvo(new_board, unsolved, i, n + 1, iteration + 1)
       valid == false and n == 9 ->
-        # IO.puts("step back once (#{iteration}) \n\n")
-
         # last cell to figure out what value we start at when we
         # step back
         {r, c, _} = Enum.at(unsolved, i - 1)
