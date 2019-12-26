@@ -34,8 +34,80 @@ defmodule SudokuSolver do
   ]
 
   """
-  def solve(input) do
-    input
+  def solve(initial_board) do
+    # this will return a bigass list of all the zero locations
+    unsolved_elements = unsolved_elements(initial_board)
+
+    # this is where we start
+    index = 0
+    IO.puts("")
+
+    # when board is valid, go to the next element with n = 1
+    # when board is invalid, and n < 9, go to the same element with n += 1
+    # when board is invalid, and n = 9, go to the last element with n -= 1
+    solvo(initial_board, unsolved_elements, index, 1, 0)
+  end
+
+  def unsolved_elements(board) do
+    Enum.zip(Range.new(1, 9), board) \
+    |> Enum.map(fn({row_index, row}) ->
+      Enum.zip(Range.new(1, 9), row) \
+      |> Enum.map(fn({col_index, e}) -> {row_index, col_index, e} end)
+    end) \
+    |> List.flatten \
+    |> Enum.filter(fn({_, _, e}) -> e == 0 end)
+  end
+
+  def solvo(board, unsolved, i, n, iteration) do
+    new_board = get_new_board(board, Enum.at(unsolved, i), n)
+
+    valid = is_valid(new_board)
+
+    IO.inspect(new_board)
+
+    cond do
+      iteration > 2000 ->
+        new_board
+      n > 9 ->
+        {r, c, _} = Enum.at(unsolved, i - 1)
+        x = Enum.at(board, r - 1) |> Enum.at(c - 1)
+
+        {a, b, _} = Enum.at(unsolved, i)
+        superboard = get_new_board(board, {a, b, nil}, 0)
+
+        solvo(superboard, unsolved, i - 1, x + 1, iteration + 1)
+      i < 0 ->
+        new_board
+      valid == true and i == length(unsolved) - 1 ->
+        IO.puts("holy shit")
+        new_board
+      valid == true ->
+        solvo(new_board, unsolved, i + 1, 1, iteration + 1)
+      valid == false and n < 9 ->
+        solvo(new_board, unsolved, i, n + 1, iteration + 1)
+      valid == false and n == 9 ->
+        # IO.puts("step back once (#{iteration}) \n\n")
+
+        # last cell to figure out what value we start at when we
+        # step back
+        {r, c, _} = Enum.at(unsolved, i - 1)
+        x = Enum.at(board, r - 1) |> Enum.at(c - 1)
+
+        # current cell to figure out which value we replace with a zero
+        {a, b, _} = Enum.at(unsolved, i)
+        superboard = get_new_board(board, {a, b, nil}, 0)
+
+        solvo(superboard, unsolved, i - 1, x + 1, iteration + 1)
+      true ->
+        new_board
+    end
+  end
+
+  def get_new_board(board, {r, c, _}, n) do
+    row = board |> Enum.at(r - 1)
+    new_row = row |> List.replace_at(c - 1, n)
+
+    board |> List.replace_at(r - 1, new_row)
   end
 
   def is_valid(board) do
